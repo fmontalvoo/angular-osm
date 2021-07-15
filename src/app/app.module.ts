@@ -11,7 +11,7 @@ import { MapModule } from './components/map/map.module';
   ],
   imports: [
     BrowserModule,
-    MapModule
+    MapModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
