@@ -1,1 +1,84 @@
-<app-map [lat]="-0.17239496915142513" [lng]="-78.48261026997494" [zoom]="15"></app-map>
+<app-map (placeData)="getPlaceInfo($event)" [lat]="-0.17239496915142513" [lng]="-78.48261026997494" [zoom]="15">
+</app-map>
+
+<div class="container mt-2 mb-5">
+    <form *ngIf="place!=undefined && place?.latlng !=null && place?.address !=null">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="txtPais">País</label>
+                    <input type="text" class="form-control" id="txtPais" placeholder=""
+                        value="{{place?.address?.country}}" readonly>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="txtProvincia">Provincia</label>
+                    <input type="text" class="form-control" id="txtProvincia" placeholder=""
+                        value="{{place?.address?.state}}" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="txtCiudad">Ciudad</label>
+                    <input type="text" class="form-control" id="txtCiudad" placeholder=""
+                        value="{{place?.address?.county}}" readonly>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="txtVecindario">Vecindario</label>
+                    <input type="text" class="form-control" id="txtVecindario" placeholder=""
+                        value="{{place?.address?.neighbourhood}}" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="txtCalle">Calle</label>
+                    <input type="text" class="form-control" id="txtCalle" placeholder=""
+                        value="{{place?.address?.road}}" readonly>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="txtSuburbio">Distrito</label>
+                    <input type="text" class="form-control" id="txtSuburbio" placeholder=""
+                        value="{{place?.address?.cityDistrict}}" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="txtLatitud">Latitud</label>
+                    <input type="text" class="form-control" id="txtLatitud" placeholder=""
+                        value="{{place?.latlng?.latitude}}" readonly>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="txtLongitud">Longitud</label>
+                    <input type="text" class="form-control" id="txtLongitud" placeholder=""
+                        value="{{place?.latlng?.longitude}}" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="txtCodigo">Codigo Postal</label>
+                    <input type="text" class="form-control" id="txtCodigo" placeholder=""
+                        value="{{place?.address?.postcode}}" readonly>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

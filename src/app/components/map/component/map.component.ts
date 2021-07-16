@@ -1,6 +1,10 @@
-import { Component, OnInit, AfterViewInit, Input, } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Input, EventEmitter, Output } from '@angular/core';
+
+import { Subscription } from 'rxjs';
 
 import { Map, tileLayer, Icon, icon, Marker } from 'leaflet';
+
+import { Place } from '../models/place.model';
 
 import { MapService } from '../services/map.service';
 
@@ -9,8 +13,7 @@ import { MapService } from '../services/map.service';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit, AfterViewInit {
-
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private map!: Map;
   private icon!: Icon;
   private marker!: Marker;
@@ -19,17 +22,26 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public lng!: number;
   @Input() public zoom!: number;
 
+  @Output() private placeData!: EventEmitter<Place>;
+
+  private subscription!: Subscription;
+
   constructor(private mapService: MapService) {
+    this.placeData = new EventEmitter();
+  }
+
+  ngOnInit(): void {
     this.lat = this.lat ?? 0.0;
     this.lng = this.lng ?? 0.0;
     this.zoom = this.zoom ?? 10;
   }
 
-  ngOnInit(): void {
-  }
-
   ngAfterViewInit(): void {
     this.initMap();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
   private initMap(): void {
@@ -67,6 +79,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     const latlng = event.latlng;
     this.marker.setLatLng(latlng);
     this.marker.addTo(this.map);
+    this.emitLatLngData();
   }
 
   /**
@@ -79,4 +92,14 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.lat = latlng.lat;
     this.lng = latlng.lng;
   }
+
+
+  private async emitLatLngData() {
+    this.subscription = this.mapService
+      .reverseLatLng({ latitude: this.lat, longitude: this.lng })
+      .subscribe(response =>
+        this.placeData.emit(response)
+      );
+  }
+
 }

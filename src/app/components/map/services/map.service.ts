@@ -1,11 +1,42 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
-import { MapModule } from '../map.module';
+import { Observable } from 'rxjs';
+
+import { map } from 'rxjs/operators';
+
+import { Place } from '../models/place.model';
+import { Coordinates } from '../models/coordinates.model';
+import { ReverseGeocoding } from '../models/reverse.geocoding.model';
 
 @Injectable({
-  providedIn: MapModule
+  providedIn: 'root'
 })
 export class MapService {
+  private url: string = 'https://nominatim.openstreetmap.org';
 
-  constructor() { }
+  constructor(private http: HttpClient) {
+  }
+
+  public reverseLatLng(latlng: Coordinates, format: string = 'jsonv2'): Observable<Place> {
+    const api = `${this.url}/reverse?format=${format}`;
+    const params = { lat: latlng.latitude, lon: latlng.longitude };
+
+    return this.http.get<ReverseGeocoding>(api, { params: params })
+      .pipe(
+        map(response => {
+          const place: Place = { latlng: latlng };
+          if (response.hasOwnProperty('address')) {
+            place.placeId = response.place_id;
+            place.category = response.category;
+            place.latlng = latlng;
+            place.name = response.name;
+            place.displayName = response.displayName;
+            place.address = response.address;
+            return place;
+          }
+          return place;
+        }),
+      );
+  }
 }
